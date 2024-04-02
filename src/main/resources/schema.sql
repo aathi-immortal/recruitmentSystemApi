@@ -1,0 +1,15 @@
+CREATE Table loginuser
+(
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    ISCOMPANY BOOLEAN,
+    USERNAME VARCHAR(40),
+    EMAIL VARCHAR(40) ,
+    PASSWORD VARCHAR(40)
+    
+
+);
+
+
+
+
+-- SELECT * from loginuser;
