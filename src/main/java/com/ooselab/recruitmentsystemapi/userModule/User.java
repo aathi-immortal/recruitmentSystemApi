@@ -12,4 +12,5 @@ public class User {
     public String password;
     public boolean isCompany;
     public String message;
+    
 }

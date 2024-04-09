@@ -42,4 +42,20 @@ public class UserController {
     public String testing() {
         return "success";
     }
+
+    @PostMapping("/addJob")
+    public String addJob(@RequestBody Job job) {
+        System.out.println("vanakkam ---------------------------------------------------------------------");
+        return userBussinessLogic.addJob(job);
+    }
+
+    @PostMapping("/getJob")
+    public List<Job> getCreatedJob(@RequestBody int userId) {
+        return userBussinessLogic.getCreatedJob(userId);
+    }
+    @PostMapping("/removeJob")
+    public String removeJob(@RequestBody int jobId)
+    {
+        return userBussinessLogic.removeJob(jobId);
+    }
 }

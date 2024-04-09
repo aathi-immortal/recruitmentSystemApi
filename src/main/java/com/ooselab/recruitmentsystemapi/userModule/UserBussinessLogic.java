@@ -16,6 +16,9 @@ interface IUserBussinessLogic {
     public CompletableFuture<User> Registration(User user);
 
     public CompletableFuture<List<User>> getUsers();
+
+    public String addJob(Job job);
+
 }
 
 @Component
@@ -30,9 +33,15 @@ public class UserBussinessLogic implements IUserBussinessLogic {
         // check is the user in the db
         // if not the return error
         // return User
-        user.message = "success";
-        if (!userRepo.userExists(user)) {
-            user.message = "user not found";
+        user.message = "user not found";
+
+        user.isCompany = false;
+        if (userRepo.userExists(user)) {
+            user.message = "success";
+            user.id = userRepo.getUserId(user);
+        }
+        if (userRepo.isAdmin(user)) {
+            user.isCompany = true;
         }
 
         return CompletableFuture.completedFuture(user);
@@ -49,6 +58,20 @@ public class UserBussinessLogic implements IUserBussinessLogic {
     @Override
     public CompletableFuture<List<User>> getUsers() {
         return CompletableFuture.completedFuture(userRepo.getAllUser());
+    }
+
+    @Override
+    public String addJob(Job job) {
+        return userRepo.addJob(job);
+    }
+
+    public List<Job> getCreatedJob(int userId) {
+        return userRepo.getCreatedJobs(userId);
+    }
+
+    public String removeJob(int jobId) {
+
+        return userRepo.removeJob(jobId);
     }
 
 }

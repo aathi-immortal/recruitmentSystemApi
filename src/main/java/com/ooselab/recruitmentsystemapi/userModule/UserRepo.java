@@ -41,6 +41,12 @@ public class UserRepo {
         return count != null && count > 0;
     }
 
+    public boolean isAdmin(User user) {
+        String sql = "SELECT COUNT(*) FROM loginuser WHERE email = ? AND password = ? AND iscompany";
+        Integer count = template.queryForObject(sql, Integer.class, user.email, user.password);
+        return count != null && count > 0;
+    }
+
     public List<User> getAllUser() {
         String sql = "select * from loginuser";
         RowMapper<User> rowMapper = new RowMapper<User>() {
@@ -59,5 +65,42 @@ public class UserRepo {
         };
 
         return template.query(sql, rowMapper);
+    }
+
+    public int getUserId(User user) {
+        String query = "SELECT id from loginuser where email = ?";
+        Integer user_id = template.queryForObject(query, Integer.class, user.email);
+        return user_id;
+    }
+
+    public List<Job> getCreatedJobs(int userId) {
+        String sql = "SELECT * FROM job WHERE user_id = ?";
+        RowMapper<Job> rowMapper = new RowMapper<Job>() {
+            @Override
+            public Job mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                Job job = new Job();
+                job.setJobId(resultSet.getInt("id"));
+                job.setJobName(resultSet.getString("jobName"));
+                job.setJobSalary(resultSet.getInt("jobSalary"));
+                job.setYearOfSkill(resultSet.getInt("yearOfSkill"));
+                job.setSkill(resultSet.getString("skill"));
+                job.setNoticePeriod(resultSet.getString("noticePeriod"));
+                job.setUserId(resultSet.getInt("user_id"));
+                return job;
+            }
+        };
+        return template.query(sql, rowMapper, userId);
+    }
+
+    public String addJob(Job job) {
+        String query = "INSERT INTO job (jobName, jobSalary, yearOfSkill, skill, noticePeriod, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+        template.update(query, job.jobName, job.jobSalary, job.yearOfSkill, job.skill, job.noticePeriod, job.userId);
+        return "success";
+    }
+
+    public String removeJob(int jobId) {
+        String query = "DELETE from job where id = ?";
+        template.update(query, jobId);
+        return "success";
     }
 }
