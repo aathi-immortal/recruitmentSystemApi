@@ -92,15 +92,86 @@ public class UserRepo {
         return template.query(sql, rowMapper, userId);
     }
 
-    public String addJob(Job job) {
+    public Message addJob(Job job) {
         String query = "INSERT INTO job (jobName, jobSalary, yearOfSkill, skill, noticePeriod, user_id) VALUES (?, ?, ?, ?, ?, ?)";
         template.update(query, job.jobName, job.jobSalary, job.yearOfSkill, job.skill, job.noticePeriod, job.userId);
-        return "success";
+        return new Message();
     }
 
-    public String removeJob(int jobId) {
+    public Message removeJob(int jobId) {
         String query = "DELETE from job where id = ?";
         template.update(query, jobId);
-        return "success";
+        return new Message();
+    }
+
+    public List<Job> getAllJobs(int user_id) {
+
+        String query = " SELECT * FROM job j WHERE j.id NOT IN ( SELECT job_id FROM user_job uj WHERE uj.user_id = ?  ); ";
+        // String query = "select * from job";
+
+        RowMapper<Job> rowMapper = new RowMapper<Job>() {
+            @Override
+            public Job mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                Job job = new Job();
+                job.setJobId(resultSet.getInt("id"));
+                job.setJobName(resultSet.getString("jobName"));
+                job.setJobSalary(resultSet.getInt("jobSalary"));
+                job.setYearOfSkill(resultSet.getInt("yearOfSkill"));
+                job.setSkill(resultSet.getString("skill"));
+                job.setNoticePeriod(resultSet.getString("noticePeriod"));
+                job.setUserId(resultSet.getInt("user_id"));
+                return job;
+            }
+        };
+
+        return template.query(query, rowMapper, user_id);
+    }
+
+    public Message applyJob(UserJob job) {
+
+        String query = "Insert into user_job (user_id,job_id) values(?,?)";
+        System.out.println(job.user_id);
+        System.out.println(job.job_id);
+        System.out.println(job.id);
+        template.update(query, job.user_id, job.job_id);
+        Message message = new Message();
+        return message;
+    }
+
+    public List<Job> getAppliedJob(int user_id) {
+        String query = "SELECT job.* FROM job INNER JOIN user_job ON job.id = user_job.job_id WHERE     user_job.user_id = ?;";
+        RowMapper<Job> rowMapper = new RowMapper<Job>() {
+            @Override
+            public Job mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                Job job = new Job();
+                job.setJobId(resultSet.getInt("id"));
+                job.setJobName(resultSet.getString("jobName"));
+                job.setJobSalary(resultSet.getInt("jobSalary"));
+                job.setYearOfSkill(resultSet.getInt("yearOfSkill"));
+                job.setSkill(resultSet.getString("skill"));
+                job.setNoticePeriod(resultSet.getString("noticePeriod"));
+                job.setUserId(resultSet.getInt("user_id"));
+                return job;
+            }
+        };
+        return template.query(query, rowMapper, user_id);
+
+    }
+
+    public List<AbstartUser> getRegUsers(int jobId) {
+        String query = "SELECT * from loginuser inner join user_job on user_job.job_id = ? and loginuser.id = user_job.user_id ";
+        RowMapper<AbstartUser> rowMapper = new RowMapper<AbstartUser>() {
+            @Override
+            public AbstartUser mapRow(ResultSet result, int rows) throws SQLException {
+                AbstartUser user = new AbstartUser();
+                user.id = result.getInt("ID");
+                user.userName = result.getString("USERNAME");
+                user.email = result.getString("EMAIL");
+
+                return user;
+            }
+
+        };
+        return template.query(query, rowMapper, jobId);
     }
 }

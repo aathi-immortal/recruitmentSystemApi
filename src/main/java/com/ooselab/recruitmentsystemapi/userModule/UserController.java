@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/addJob")
-    public String addJob(@RequestBody Job job) {
+    public Message addJob(@RequestBody Job job) {
         System.out.println("vanakkam ---------------------------------------------------------------------");
         return userBussinessLogic.addJob(job);
     }
@@ -53,9 +53,32 @@ public class UserController {
     public List<Job> getCreatedJob(@RequestBody int userId) {
         return userBussinessLogic.getCreatedJob(userId);
     }
+
     @PostMapping("/removeJob")
-    public String removeJob(@RequestBody int jobId)
-    {
+    public Message removeJob(@RequestBody int jobId) {
         return userBussinessLogic.removeJob(jobId);
     }
+
+    @PostMapping("/getAllJobs")
+    public List<Job> getAllJobs(@RequestBody int user_id) {
+        return userBussinessLogic.getAllJobs(user_id);
+    }
+
+    @PostMapping("/applyJob")
+    public Message applyJob(@RequestBody UserJob job) {
+        System.out.println("user id " + job.user_id);
+        System.out.println("job Id " + job.job_id);
+        return userBussinessLogic.applyJob(job);
+    }
+
+    @PostMapping("/getMyJobs")
+    public List<Job> getAppliedJobs(@RequestBody int user_id) {
+        return userBussinessLogic.getAppliedJobs(user_id);
+    }
+
+    @PostMapping("getRegisteredUsers")
+    public List<AbstartUser> getRegUsers(@RequestBody int jobId) {
+        return userBussinessLogic.getRegUsers(jobId);
+    }
+
 }

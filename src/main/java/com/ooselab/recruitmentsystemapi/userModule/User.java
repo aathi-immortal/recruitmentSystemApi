@@ -12,5 +12,11 @@ public class User {
     public String password;
     public boolean isCompany;
     public String message;
-    
+
+}
+
+class AbstartUser {
+    public int id;
+    public String userName;
+    public String email;
 }

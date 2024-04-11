@@ -22,3 +22,12 @@ CREATE TABLE job (
 
 
 -- SELECT * from loginuser;
+
+
+CREATE Table user_job(
+    id INT Auto_Increment PRIMARY KEY,
+    user_id INT,
+    job_id INT,
+    FOREIGN KEY (user_id) REFERENCES loginuser(ID),
+    FOREIGN KEY (job_id) REFERENCES job(ID)
+);

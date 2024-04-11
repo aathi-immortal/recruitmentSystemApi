@@ -17,7 +17,7 @@ interface IUserBussinessLogic {
 
     public CompletableFuture<List<User>> getUsers();
 
-    public String addJob(Job job);
+    public Message addJob(Job job);
 
 }
 
@@ -61,7 +61,7 @@ public class UserBussinessLogic implements IUserBussinessLogic {
     }
 
     @Override
-    public String addJob(Job job) {
+    public Message addJob(Job job) {
         return userRepo.addJob(job);
     }
 
@@ -69,9 +69,28 @@ public class UserBussinessLogic implements IUserBussinessLogic {
         return userRepo.getCreatedJobs(userId);
     }
 
-    public String removeJob(int jobId) {
+    public Message removeJob(int jobId) {
 
         return userRepo.removeJob(jobId);
+    }
+
+    public List<Job> getAllJobs(int job) {
+        return userRepo.getAllJobs(job);
+
+    }
+
+    public Message applyJob(UserJob job) {
+
+        return userRepo.applyJob(job);
+    }
+
+    public List<Job> getAppliedJobs(int user_id) {
+        return userRepo.getAppliedJob(user_id);
+
+    }
+
+    public List<AbstartUser> getRegUsers(int jobId) {
+        return userRepo.getRegUsers(jobId);
     }
 
 }
