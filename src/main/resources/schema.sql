@@ -31,3 +31,11 @@ CREATE Table user_job(
     FOREIGN KEY (user_id) REFERENCES loginuser(ID),
     FOREIGN KEY (job_id) REFERENCES job(ID)
 );
+
+CREATE TABLE resume (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    file_data BLOB NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES loginuser(ID)
+
+);

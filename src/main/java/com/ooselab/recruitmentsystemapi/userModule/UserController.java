@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin("*")
@@ -79,6 +80,21 @@ public class UserController {
     @PostMapping("getRegisteredUsers")
     public List<AbstartUser> getRegUsers(@RequestBody int jobId) {
         return userBussinessLogic.getRegUsers(jobId);
+    }
+
+    @PostMapping("/upload")
+    public Message uploadResume(@RequestParam("file") MultipartFile file, @RequestParam("user_id") int userId) {
+        ImageRequest request = new ImageRequest();
+        request.file = file;
+        request.user_id = userId;
+        Message message = new Message();
+        message.message = userBussinessLogic.uploadResume(request);
+        return message;
+    }
+
+    @GetMapping("/getResume")
+    public byte[] getResume(@RequestParam("userId") int userId) {
+        return userBussinessLogic.getResume(userId);
     }
 
 }

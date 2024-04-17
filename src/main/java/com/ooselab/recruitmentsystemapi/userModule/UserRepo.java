@@ -1,14 +1,17 @@
 package com.ooselab.recruitmentsystemapi.userModule;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 @Repository
 public class UserRepo {
@@ -173,5 +176,50 @@ public class UserRepo {
 
         };
         return template.query(query, rowMapper, jobId);
+    }
+
+    public String uploadResume(ImageRequest file) {
+        String message;
+        if (getResume(file.user_id).length != 0)
+
+        {
+            try {
+                deleteResume(file.user_id);
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        }
+        try {
+            String sql = "INSERT INTO resume (file_data, user_id) VALUES (?, ?)";
+            PreparedStatement statement = template.getDataSource().getConnection().prepareStatement(sql);
+            statement.setBytes(1, file.file.getBytes());
+            statement.setInt(2, file.user_id);
+            statement.executeUpdate();
+            message = "Resume uploaded successfully";
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Failed to upload resume";
+        }
+        return message;
+    }
+
+    public void deleteResume(int userId) throws SQLException {
+        String sql = "DELETE FROM resume WHERE user_id = ?";
+        PreparedStatement statement = template.getDataSource().getConnection().prepareStatement(sql);
+        statement.setInt(1, userId);
+        statement.executeUpdate();
+    }
+
+    public byte[] getResume(int userId) {
+
+        String sql = "SELECT file_data FROM resume WHERE user_id = ?";
+        try {
+            return template.queryForObject(sql, byte[].class, userId);
+        } catch (EmptyResultDataAccessException e) {
+            // No resume found for the user ID, return an empty byte array
+            return new byte[0];
+        }
+
     }
 }

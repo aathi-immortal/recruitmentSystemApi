@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * IUserBussinessLogic
@@ -91,6 +92,16 @@ public class UserBussinessLogic implements IUserBussinessLogic {
 
     public List<AbstartUser> getRegUsers(int jobId) {
         return userRepo.getRegUsers(jobId);
+    }
+
+    public String uploadResume(ImageRequest file) {
+
+        return userRepo.uploadResume(file);
+
+    }
+
+    public byte[] getResume(int userId) {
+        return userRepo.getResume(userId);
     }
 
 }
